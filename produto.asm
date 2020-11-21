@@ -1,3 +1,15 @@
+;
+;                 _ _   _       _                                             
+;                | | | (_)     | |                                            
+; _ __ ___  _   _| | |_ _ _ __ | | ___     ___ ___  _ __ ___  _   _ _ __ ___  
+;| '_ ` _ \| | | | | __| | '_ \| |/ _ \   / __/ _ \| '_ ` _ \| | | | '_ ` _ \ 
+;| | | | | | |_| | | |_| | |_) | | (_) | | (_| (_) | | | | | | |_| | | | | | |
+;|_| |_| |_|\__,_|_|\__|_| .__/|_|\___/   \___\___/|_| |_| |_|\__,_|_| |_| |_|
+;                        | |                                                  
+;                        |_|                                                  
+;
+;-----------------------------------------------------------------------------
+
 ;Procurar múltiplo comum entre dois números 
 ;abaixo de 1000 e positivo
 
@@ -94,7 +106,7 @@ main: ;função
     mov  rsi, [rbp-16];number2
     call multiple ;call multiple
 
-    mov  [rbp-24], rax ;resultado é o endereço malloc
+    mov  [rbp-24], rax ;retorna é o endereço malloc
 
     mov  rdi, text_multiple
     mov  rsi, [rbp-8] ;number1
@@ -103,7 +115,7 @@ main: ;função
     call printf ;text_multiple com number1 e number2
 
     mov  rcx, 0 ;index
-    mov  qword rdx, [rbp-24] ;index para rdx
+    mov  qword rdx, [rbp-24] ;endereço do array rdx = [rbp-24](endereço)
 
     cmp  qword rdx, 0 ;compara se o valor retornado é NULL
 
@@ -164,24 +176,24 @@ multiple: ;Função
 
     mov  edi, 21
     imul edi, 8
-    call malloc ;rax = malloc(21*8)
+    call malloc ;rax = malloc(rdi[21*8])
     mov  qword [rax], 0
     mov  qword [rbp-24], rax
 
-  loop_multiple1:
+  loop_multiple1: ;loop_multiple1
 
     inc  qword [rbp-32]
     mov  rax, qword [rbp-32]
     mul  qword [rbp-8]
     mov  [rbp-48], rax ;---- [rbp-48] resultado multiplicação number1
-    mov  r11, rax
+    mov  r11, rax   ;rax é usado implícito, portanto passa resultado r11
     mov  qword [rbp-40], 0
 
-  loop_multiple2:
+  loop_multiple2: ;loop dentro do loop_multiple1
     inc  qword [rbp-40]
     mov  rax, qword [rbp-40]
-    mul  qword [rbp-16] ;--- rdx resultado multiplicação number2
-    mov rdx, rax
+    mul  qword [rbp-16]
+    mov rdx, rax    ;--- rdx resultado multiplicação number2
 
     cmp  rdx, r11 ;verifique se produtos são iguais
     jne  cmp_nultiple2 ;
